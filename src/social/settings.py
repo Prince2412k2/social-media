@@ -45,17 +45,33 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",  # for allauth
     "django.contrib.staticfiles",
+    ## third-party
     "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
+    ##my apps
     "core",
 ]
 
 # NOTE : manual config from here
+
+SITE_ID = 1
+REST_USE_JWT = True
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+AUTH_USER_MODEL = "core.User"
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -111,6 +127,13 @@ LOGGING = {
     },
 }
 
+# Tell allauth your User model has no username field
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
+# Login method must match your user model (email-only)
+# Signup fields (new-style)
+ACCOUNT_SIGNUP_FIELDS = ["email", "password1", "password2"]
+
+
 # NOTE: ...manual config ends here
 
 MIDDLEWARE = [
@@ -121,6 +144,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    ##allAuth config
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "social.urls"

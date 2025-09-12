@@ -41,10 +41,39 @@ class User(BaseModel):
     bio = models.TextField(blank=True)
     avatar = models.ImageField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return f"{self.username} with email {self.email}"
+
+    # NOTE: These properties are there only for Django auth to think our user is AbstractUser
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_staff(self):
+        return False
+
+    @property
+    def is_superuser(self):
+        return False
+
+    def get_full_name(self):
+        return self.username
+
+    def get_short_name(self):
+        return self.username
 
 
 class Credential(BaseModel):

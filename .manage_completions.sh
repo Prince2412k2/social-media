@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+_poe_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=($(compgen -W "make migrate run shell" -- "$cur"))
+}
+
+complete -F _poe_completions poe

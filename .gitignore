@@ -16,3 +16,6 @@ wheels/
 
 #databse
 src/db.sqlite3
+
+#logs
+**/*.log
