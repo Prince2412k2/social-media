@@ -13,3 +13,6 @@ wheels/
 .env
 .env.*
 */.env
+
+#databse
+src/db.sqlite3

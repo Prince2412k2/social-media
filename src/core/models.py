@@ -41,6 +41,7 @@ class User(BaseModel):
     bio = models.TextField(blank=True)
     avatar = models.ImageField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.username} with email {self.email}"
@@ -57,8 +58,8 @@ class Credential(BaseModel):
         GITHUB = "github", "GitHub"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="credentials")
-    provider = models.CharField(max_length=20, choices=Provider.choices)
-    provider_id = models.CharField(max_length=20, blank=True, null=True)
+    provider = models.CharField(max_length=255, choices=Provider.choices)
+    provider_id = models.CharField(max_length=255, blank=True, null=True)
     password = models.CharField(max_length=128, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
