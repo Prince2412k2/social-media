@@ -1,7 +1,12 @@
+import logging
 from rest_framework import serializers
 
-from core.auth.password_service import set_password
 from .models import User
+
+from dj_rest_auth.serializers import JWTSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
+logger = logging.getLogger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,12 +36,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         provider = validated_data.pop("provider")
-        password = validated_data.pop("password", None)
         user = User.objects.create(**validated_data)
-
-        if provider == "PASSWORD":
-            set_password(user, password)
-        elif provider == "GOOGLE":
+        if provider == "GOOGLE":
             pass
         elif provider == "GITHUB":
             pass
@@ -47,3 +48,8 @@ class CredentialSerializer(serializers.ModelSerializer):
     class Meta:  # pyright: ignore
         model = User
         fields = ["id", "user", "provider", "provider_id", "password", "created_at"]
+
+
+class CustomJWTSerializer(JWTSerializer):
+    def validate(self, attrs):
+        return {}

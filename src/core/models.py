@@ -1,4 +1,9 @@
+import logging
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+logger = logging.getLogger(__name__)
 
 
 class BaseManager(models.Manager):
@@ -29,12 +34,13 @@ class BaseModel(models.Model):
         self.save(using=using)
 
 
-class User(BaseModel):
+class User(BaseModel, AbstractUser):  # pyright: ignore
     """
     User model for database
     """
 
     username = models.CharField(max_length=100)
+    password = models.CharField(max_length=128, blank=True, null=True)
     email = models.EmailField(
         unique=True,
     )
@@ -48,33 +54,6 @@ class User(BaseModel):
     def __str__(self):
         return f"{self.username} with email {self.email}"
 
-    # NOTE: These properties are there only for Django auth to think our user is AbstractUser
-    @property
-    def is_active(self):
-        return True
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    @property
-    def is_authenticated(self):
-        return True
-
-    @property
-    def is_staff(self):
-        return False
-
-    @property
-    def is_superuser(self):
-        return False
-
-    def get_full_name(self):
-        return self.username
-
-    def get_short_name(self):
-        return self.username
-
 
 class Credential(BaseModel):
     """
@@ -82,14 +61,12 @@ class Credential(BaseModel):
     """
 
     class Provider(models.TextChoices):
-        PASSWORD = "password", "Passwod"
         GOOGLE = "google", "Google"
         GITHUB = "github", "GitHub"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="credentials")
     provider = models.CharField(max_length=255, choices=Provider.choices)
     provider_id = models.CharField(max_length=255, blank=True, null=True)
-    password = models.CharField(max_length=128, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:  # pyright: ignore

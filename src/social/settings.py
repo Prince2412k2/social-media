@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
 
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,10 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
-if not SECRET_KEY:
-    raise ValueError("secret-key not provided")
 
+DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+
+secrets = [SECRET_KEY, GOOGLE_CLIENT_SECRET, GOOGLE_CLIENT_ID]
+
+if not all(secrets):
+    print("Make sure to have all of these in .env")
+    with open(".example.env", "r") as file:
+        print(file.read())
+        exit()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,8 +54,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.sites",  # for allauth
     "django.contrib.staticfiles",
+    "django.contrib.sites",  # for allauth
     ## third-party
     "rest_framework",
     "rest_framework.authtoken",
@@ -61,17 +70,54 @@ INSTALLED_APPS = [
     "core",
 ]
 
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": GOOGLE_CLIENT_ID,
+            "secret": GOOGLE_CLIENT_SECRET,
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {"access_type": "online"},
+    }
+}
+
 # NOTE : manual config from here
+AUTH_USER_MODEL = "core.User"
 
 SITE_ID = 1
-REST_USE_JWT = True
+AUTHENTICATION_BACKENDS = [
+    "core.auth.auth.CredentialBackend",
+    "django.contrib.auth.backends.ModelBackend",  # fallback
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # optionally you can also have cookie-based JWT or other auths
     ),
 }
-AUTH_USER_MODEL = "core.User"
+REST_USE_JWT = True
+TOKEN_MODEL = None
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_SERIALIZER": "core.serializer.CustomJWTSerializer",
+    "JWT_AUTH_COOKIE": "access_token",
+    "JWT_AUTH_REFRESH_COOKIE": "refresh_token",
+    "JWT_AUTH_COOKIE_SECURE": True,  # True in production
+    "JWT_AUTH_HTTPONLY": True,  # JS cannot read cookie
+    "JWT_AUTH_SAMESITE": "Lax",
+    "JWT_AUTH_COOKIE_USE_CSRF": False,
+    "JWT_AUTH_RETURN_EXPIRATION": True,
+}
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -79,14 +125,11 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": lambda u: True,
 }
 
-
-AUTHENTICATION_BACKENDS = [
-    "core.auth.auth.CredentialBackend",
-    "django.contrib.auth.backends.ModelBackend",  # fallback
-]
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
 
 LOGGING = {
     "version": 1,
@@ -127,14 +170,12 @@ LOGGING = {
     },
 }
 
-# Tell allauth your User model has no username field
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
-# Login method must match your user model (email-only)
+
 # Signup fields (new-style)
-ACCOUNT_SIGNUP_FIELDS = ["email", "password1", "password2"]
 
 
 # NOTE: ...manual config ends here
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

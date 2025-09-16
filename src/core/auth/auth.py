@@ -1,7 +1,14 @@
 import logging
 from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.hashers import make_password
 from ..models import User, Credential
 from .password_service import check_password, verify_password
+from django.contrib.auth import authenticate
+
+# serializers.py
+from dj_rest_auth.serializers import LoginSerializer
+from allauth.account import app_settings
+from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
 
@@ -23,3 +30,31 @@ class CredentialBackend(BaseBackend):
             return user
         except User.DoesNotExist:
             return None
+
+
+class CustomRegistrationSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
+    password1 = serializers.CharField(write_only=True, required=True)
+
+    def create(self, validated_data):
+        try:
+            user = User.objects.create(
+                email=validated_data["email"],
+                username=validated_data["username"],
+                password=make_password(validated_data["password"]),
+            )
+            return user
+        except Exception as e:
+            logger.info(f"User with {self.email=} already exists")
+            raise e
+
+
+class CustomLoginSerializer(LoginSerializer):
+    email = serializers.EmailField(required=True)
+    username = None
+
+    def authenticate(self, **kwargs):
+        email = kwargs.get("email")
+        password = kwargs.get("password")
+        return authenticate(email=email, password=password)
