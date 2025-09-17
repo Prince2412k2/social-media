@@ -195,6 +195,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     ##allAuth config
     "allauth.account.middleware.AccountMiddleware",
+    ##Permissions middleware
+    "core.auth.permission_middleware.CookieToHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "social.urls"
