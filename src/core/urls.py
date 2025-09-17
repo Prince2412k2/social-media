@@ -1,7 +1,7 @@
 from dj_rest_auth.views import LoginView
 from django.urls import path, include
 
-from core.views.auth_view import (
+from core.auth import (
     CookieLoginView,
     CookieTokenRefreshView,
     GithubLogin,
@@ -23,5 +23,4 @@ urlpatterns = [
     path("auth/registration/", include("dj_rest_auth.registration.urls")),
     path("auth/google/", GoogleLogin.as_view(), name="google_login"),
     path("auth/github/", GithubLogin.as_view(), name="github_login"),
-    # path("auth/google/callback/",)
 ]
