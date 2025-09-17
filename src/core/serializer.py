@@ -1,6 +1,8 @@
 import logging
 from rest_framework import serializers
 
+from core.auth.password_service import verify_password
+
 from .models import User
 
 from dj_rest_auth.serializers import JWTSerializer

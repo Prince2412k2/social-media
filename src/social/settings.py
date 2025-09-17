@@ -31,8 +31,16 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 
-secrets = [SECRET_KEY, GOOGLE_CLIENT_SECRET, GOOGLE_CLIENT_ID]
+secrets = {
+    SECRET_KEY,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+}
 
 if not all(secrets):
     print("Make sure to have all of these in .env")
