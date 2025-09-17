@@ -27,19 +27,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-
 DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
 
+
+GITHUB_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
+GITHUB_GET_USER_URL = "https://api.github.com/user"
+GOOGLE_ACCESS_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_GET_USER_URL = "https://oauth2.googleapis.com/tokeninfo"
 secrets = {
     SECRET_KEY,
     GOOGLE_CLIENT_SECRET,
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
+    GOOGLE_REDIRECT_URI,
 }
 
 if not all(secrets):

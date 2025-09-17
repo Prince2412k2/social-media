@@ -8,7 +8,12 @@ from core.models import Credential, User
 import requests
 from django.db import transaction
 
-from social.settings import GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
+from social.settings import (
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET,
+    GITHUB_ACCESS_TOKEN_URL,
+    GITHUB_GET_USER_URL,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -24,14 +29,12 @@ class GithubLogin(SocialLoginView):
             "client_secret": GITHUB_CLIENT_SECRET,
             "code": query,
         }
-        res = requests.post(
-            "https://github.com/login/oauth/access_token", headers=headers, data=body
-        ).json()
+        res = requests.post(GITHUB_ACCESS_TOKEN_URL, headers=headers, data=body).json()
         return res["access_token"]
 
     def get_user_from_token(self, token):
         headers = {"Authorization": f"token {token}"}
-        return requests.get("https://api.github.com/user", headers=headers).json()
+        return requests.get(GITHUB_GET_USER_URL, headers=headers).json()
 
     def get(self, request):
         query = request.query_params.get("code", False)
@@ -75,12 +78,22 @@ class GithubLogin(SocialLoginView):
                 provider_id=str(github_id),
             )
 
-        # Generate JWT tokens
+        response = Response({"msg": "User loggedin"})
+
         refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-                "user": {"email": user.email, "username": user.username},
-            }
+        response.set_cookie(
+            "refresh_token",
+            str(refresh),
+            httponly=True,
+            samesite="Lax",
+            max_age=7 * 24 * 3600,  # 7 days
         )
+        response.set_cookie(
+            "access_token",
+            str(refresh.access_token),
+            httponly=True,
+            samesite="Lax",
+            max_age=15 * 60,  # 15 minutes
+        )
+
+        return response

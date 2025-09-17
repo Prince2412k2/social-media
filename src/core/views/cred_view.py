@@ -13,16 +13,6 @@ def credentials(request):
     return get_credentials(pk=None)
 
 
-# @api_view(["GET", "POST", "PUT"])
-# def user(request, pk=None):
-#     if request.method == "POST":
-#         return create_credentials(request)
-#     elif request.method == "DELETE":
-#         return delete_user(pk)
-#     return get_users(pk=pk)
-#
-
-
 # Create your views here.
 def get_credentials(pk=None):
     """
@@ -42,17 +32,3 @@ def get_credentials(pk=None):
             if not cred.is_deleted
             else Response(status=status.HTTP_404_NOT_FOUND)
         )
-
-
-#
-# def add_credentials(request):
-#     """
-#     POST : create a new user
-#     """
-#     serializer = CredentialSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#

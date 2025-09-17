@@ -16,8 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
     provider = serializers.ChoiceField(
         choices=[
             "PASSWORD",
-            # "GOOGLE",
-            # "GITHUB",
         ],
         write_only=True,
         required=True,

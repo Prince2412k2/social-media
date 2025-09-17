@@ -8,7 +8,13 @@ from core.models import Credential, User
 import requests
 from django.db import transaction
 
-from social.settings import GOOGLE_CLIENT_ID
+from social.settings import (
+    GOOGLE_ACCESS_TOKEN_URL,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_GET_USER_URL,
+    GOOGLE_REDIRECT_URI,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -17,20 +23,42 @@ logger = logging.getLogger(__name__)
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
+    def get_token_from_code(self, code):
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        body = {
+            "code": code,
+            "client_id": GOOGLE_CLIENT_ID,
+            "client_secret": GOOGLE_CLIENT_SECRET,
+            "redirect_uri": GOOGLE_REDIRECT_URI,
+            "grant_type": "authorization_code",
+        }
+        res = requests.post(GOOGLE_ACCESS_TOKEN_URL, data=body, headers=headers)
+        res.raise_for_status()
+        return res.json().get("id_token")
+
+    def get(self, request):
+        code = request.query_params.get("code", False)
+        if not code:
+            return Response(
+                {"error": "No 'code' field fount in query"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        token = self.get_token_from_code(code)
+        return self.custom_response(token)
+
     def post(self, request):
         id_token = request.data.get("id_token")
-        logger.info(f"{id_token=}")
         if not id_token:
             return Response(
                 {"error": "id_token required"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        return self.custom_response(id_token)
+
+    def custom_response(self, id_token):
         # Verify token with Google
-        response = requests.get(
-            "https://oauth2.googleapis.com/tokeninfo", params={"id_token": id_token}
-        )
+        response = requests.get(GOOGLE_GET_USER_URL, params={"id_token": id_token})
         token_info = response.json()
-        logger.info(f"{token_info=}")
         if response.status_code != 200 or token_info.get("aud") != GOOGLE_CLIENT_ID:
             return Response(
                 {"error": "Invalid id_token"}, status=status.HTTP_400_BAD_REQUEST

@@ -7,25 +7,23 @@ from ..serializer import UserSerializer
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_users(request, pk=None):
+def get_users(request):
     """
     GET : serialized user|users objects
     given pk it return user with pk
     without pk it returns all users
     """
-    if not pk:
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-    else:
-        user = User.objects.get(pk=pk)
-        serializer = UserSerializer(user)
-        return (
-            Response(serializer.data)
-            if not user.is_deleted
-            else Response(status=status.HTTP_404_NOT_FOUND)
-        )
+    user = User.objects.all()
+    serializer = UserSerializer(user, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    users = request.user
+    serializer = UserSerializer(users)
+    return Response(serializer.data)
 
 
 # NOTE :get is here only for html forms in DRF dashboard

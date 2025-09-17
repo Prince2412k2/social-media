@@ -8,13 +8,13 @@ from core.auth import (
     GoogleLogin,
     LogoutView,
 )
-from .views.user_view import get_users
+from .views.user_view import get_users, get_user
 
 
 urlpatterns = [
     # temp-paths
     path("users/", get_users, name="get-users"),
-    path("user/<int:pk>/", get_users, name="get-users"),
+    path("user/me/", get_user, name="get-users"),
     ##AUTH
     path("auth/login", CookieLoginView.as_view(), name="Password-Login"),
     path("auth/refresh", CookieTokenRefreshView.as_view(), name="cookie-token-refresh"),
