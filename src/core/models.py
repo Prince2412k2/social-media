@@ -1,4 +1,6 @@
+from enum import unique
 import logging
+from typing import Literal
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -47,12 +49,37 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     bio = models.TextField(blank=True)
     avatar = models.ImageField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    followers = models.ManyToManyField(
+        "self", symmetrical=False, related_name="following"
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return f"{self.username} with email {self.email}"
+
+    @property
+    def following_users(self) -> models.QuerySet["User"]:
+        return self.following.all()  # pyright: ignore
+
+    def follow(self, user: "User"):
+        if user == self:
+            raise ValueError("Cannot follow yourself")
+        self.following.add(user)  # pyright: ignore
+
+    def unfollow(self, user: "User"):
+        if user in self.following.all():  # type: ignore
+            self.following.remove(user)  # pyright: ignore
+
+    def remove_follower(self, user: "User"):
+        if user in self.followers.all():  # type: ignore
+            self.followers.remove(user)  # removes the relationship in the join table
+
+    def delete(self, using=None, keep_parents=False):  # pyright: ignore
+        self.is_deleted = True
+        self.followers.clear()
+        self.following.clear()  # pyright: ignore
+        self.save(using=using)
 
 
 class Credential(BaseModel):
@@ -74,3 +101,6 @@ class Credential(BaseModel):
 
     def __str__(self):
         return f"{self.provider} for {self.user}"
+
+
+Provider_Type = Literal[Credential.Provider.GOOGLE, Credential.Provider.GITHUB]

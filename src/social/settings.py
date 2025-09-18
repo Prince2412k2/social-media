@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
-
+from urllib.parse import urlparse, parse_qsl
 
 load_dotenv()
 
@@ -33,6 +33,7 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+POSTGRES = os.environ.get("POSTGRES")
 
 
 GITHUB_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
@@ -46,6 +47,7 @@ secrets = {
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URI,
+    POSTGRES,
 }
 
 if not all(secrets):
@@ -53,6 +55,7 @@ if not all(secrets):
     with open(".example.env", "r") as file:
         print(file.read())
         exit()
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -105,8 +108,7 @@ AUTH_USER_MODEL = "core.User"
 
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
-    "core.auth.auth.CredentialBackend",
-    "django.contrib.auth.backends.ModelBackend",  # fallback
+    "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
@@ -202,7 +204,7 @@ MIDDLEWARE = [
     ##allAuth config
     "allauth.account.middleware.AccountMiddleware",
     ##Permissions middleware
-    "core.auth.permission_middleware.CookieToHeaderMiddleware",
+    "core.middleware.permission_middleware.CookieToHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "social.urls"
@@ -228,13 +230,27 @@ WSGI_APPLICATION = "social.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+tmpPostgres = urlparse(POSTGRES)
+
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": str(tmpPostgres.path).replace("/", ""),
+        "USER": tmpPostgres.username,
+        "PASSWORD": tmpPostgres.password,
+        "HOST": tmpPostgres.hostname,
+        "PORT": 5432,
+        "OPTIONS": dict(parse_qsl(str(tmpPostgres.query))),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

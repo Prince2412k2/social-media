@@ -1,7 +1,6 @@
 import logging
 from rest_framework import serializers
 
-from core.auth.password_service import verify_password
 
 from .models import User
 
@@ -13,13 +12,6 @@ logger = logging.getLogger(__name__)
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    provider = serializers.ChoiceField(
-        choices=[
-            "PASSWORD",
-        ],
-        write_only=True,
-        required=True,
-    )
 
     class Meta:  # pyright: ignore
         model = User
