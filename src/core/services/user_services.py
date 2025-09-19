@@ -69,3 +69,28 @@ class UserService:
                     user=user, provider=provider, provider_id=provider_id
                 )
         return user
+
+
+class FollowService:
+    @staticmethod
+    def follow(self_user: User, user_to_follow_id: int):
+        user_to_follow = UserService.get_user_by_pk(user_to_follow_id)
+        self_user.follow(user_to_follow)
+
+    @staticmethod
+    def unfollow(self_user: User, user_to_unfollow_id: int):
+        user_to_unfollow = UserService.get_user_by_pk(user_to_unfollow_id)
+        self_user.unfollow(user_to_unfollow)
+
+    @staticmethod
+    def get_followers(self_user: User):
+        return self_user.followers.all()
+
+    @staticmethod
+    def get_following(self_user: User):
+        return self_user.following_users
+
+    @staticmethod
+    def remove_follower(self_user: User, user_to_unfollow_id: int):
+        follower_to_remove = UserService.get_user_by_pk(user_to_unfollow_id)
+        self_user.remove_follower(follower_to_remove)

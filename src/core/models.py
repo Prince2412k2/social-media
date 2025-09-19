@@ -1,7 +1,6 @@
 from enum import unique
 import logging
 from typing import Literal
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -70,10 +69,16 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     def unfollow(self, user: "User"):
         if user in self.following.all():  # type: ignore
             self.following.remove(user)  # pyright: ignore
+        else:
+            raise ValueError("Can not unfollow a user you dont follow")
 
     def remove_follower(self, user: "User"):
         if user in self.followers.all():  # type: ignore
             self.followers.remove(user)  # removes the relationship in the join table
+        else:
+            raise ValueError(
+                "Can not remove a User from followers who doesnt follow you"
+            )
 
     def delete(self, using=None, keep_parents=False):  # pyright: ignore
         self.is_deleted = True

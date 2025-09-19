@@ -7,14 +7,13 @@ from rest_framework import serializers
 logger = logging.getLogger(__name__)
 
 
-class DbUserSerializer(serializers.ModelSerializer):
+class DBUserSerializer(serializers.ModelSerializer):
     class Meta:  # pyright: ignore
         model = User
         fields = [
             "id",
             "username",
             "password",
-            "provider",
             "email",
             "bio",
             "avatar",

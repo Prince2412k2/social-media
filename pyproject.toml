@@ -27,6 +27,8 @@ make = "./src/manage.py makemigrations"
 migrate = "./src/manage.py migrate"
 run = "./src/manage.py runserver"
 shell = "./src/manage.py shell"
+flush="./src/manage.py flush"
+reset_db="./src/manage.py resetdb"
 
 [dependency-groups]
 dev = [

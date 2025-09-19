@@ -1,5 +1,6 @@
 import logging
 from dj_rest_auth.registration.views import RegisterView
+from django.db import IntegrityError
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,10 +20,19 @@ class PasswordSignupView(RegisterView):
     def post(self, request):
         username = request.data.get("username")
         email = request.data.get("email")
-        password = request.data.get("password1")[0]
-        user = UserService.create_user(
-            email=email, username=username, password=password
-        )
+        password = request.data.get("password1")
+        try:
+            user = UserService.create_user(
+                email=email, username=username, password=password
+            )
+        except IntegrityError:
+            return Response(
+                {
+                    "status": "Failed",
+                    "message": "user with this Email already exists",
+                },
+                status.HTTP_409_CONFLICT,
+            )
         refresh_token = TokenService.get_refresh_token_for_user(user)
         response = Response(
             {
