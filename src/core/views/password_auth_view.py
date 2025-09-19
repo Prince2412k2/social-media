@@ -1,4 +1,5 @@
 import logging
+from dj_rest_auth.registration.views import RegisterView
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,9 +9,30 @@ from dj_rest_auth.views import LoginView
 from core.models import User
 from core.services.password_auth_service import PasswordAuthService
 from core.services.token_service import TokenService
+from core.services.user_services import UserService
 
 
 logger = logging.getLogger(__name__)
+
+
+class PasswordSignupView(RegisterView):
+    def post(self, request):
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password1")[0]
+        user = UserService.create_user(
+            email=email, username=username, password=password
+        )
+        refresh_token = TokenService.get_refresh_token_for_user(user)
+        response = Response(
+            {
+                "status": "Success",
+                "message": "Logged in",
+            },
+            status.HTTP_200_OK,
+        )
+        response = TokenService.set_token_in_cookies(refresh_token, response)
+        return response
 
 
 class PasswordLoginView(LoginView):

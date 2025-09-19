@@ -33,6 +33,8 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+
+
 POSTGRES = os.environ.get("POSTGRES")
 
 
@@ -40,6 +42,8 @@ GITHUB_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
 GITHUB_GET_USER_URL = "https://api.github.com/user"
 GOOGLE_ACCESS_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_GET_USER_URL = "https://oauth2.googleapis.com/tokeninfo"
+GITHUB_EMAIL_URL = "https://api.github.com/user/emails"
+
 secrets = {
     SECRET_KEY,
     GOOGLE_CLIENT_SECRET,
@@ -204,7 +208,7 @@ MIDDLEWARE = [
     ##allAuth config
     "allauth.account.middleware.AccountMiddleware",
     ##Permissions middleware
-    "core.middleware.permission_middleware.CookieToHeaderMiddleware",
+    "core.middlewares.permission_middleware.CookieToHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "social.urls"

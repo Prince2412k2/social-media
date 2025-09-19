@@ -1,6 +1,6 @@
-from typing import Literal, Optional
+from typing import Optional, Type
 
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from core.models import Credential, User, Provider_Type
 from core.services.password_service import PasswordService
 
@@ -21,11 +21,12 @@ class UserService:
             raise
 
     @staticmethod
-    def update_password(pk: int | User, hashed_password: str):
+    def update_password(pk: int | User, password: str):
         user = UserService.get_user_by_pk(pk) if isinstance(pk, int) else pk
+        hashed = PasswordService.hash_password(password)
         if not user:
             return None
-        user.password = hashed_password
+        user.password = hashed
         user.save()
 
     @staticmethod
@@ -45,7 +46,9 @@ class UserService:
     def create_user(
         email: str,
         username: str,
-        provider: Provider_Type,
+        provider: Optional[Provider_Type] = None,
+        avatar: str = "",
+        bio: str = "",
         password: Optional[str] = None,
         provider_id: Optional[str] = None,
     ) -> User:
@@ -53,9 +56,16 @@ class UserService:
             return UserService._create_user_with_pass(email, username, password)
         with transaction.atomic():
             user, created = User.objects.get_or_create(
-                email=email, defaults={"username": username}
+                email=email,
+                defaults={
+                    "username": username,
+                    "avatar": avatar,
+                    "bio": bio,
+                    "password": password,
+                },
             )
-            Credential.objects.update_or_create(
-                user=user, provider=provider, provider_id=provider_id
-            )
+            if provider:
+                Credential.objects.update_or_create(
+                    user=user, provider=provider, provider_id=provider_id
+                )
         return user
