@@ -89,7 +89,11 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     ##my apps
     "core",
+    ##Storages
+    "Storages",
 ]
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3,S3BOTO3Storage"
 
 
 SOCIALACCOUNT_PROVIDERS = {
