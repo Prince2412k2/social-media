@@ -11,16 +11,15 @@ class PasswordAuthService:
         if not password:
             raise AuthenticationFailed
         user = UserService.get_user_by_email(email)
-        hashed = PasswordService.hash_password(password)
         if not user:
             raise User.DoesNotExist
-        if not PasswordService.verify_user_with_password(user, hashed):
+        if not PasswordService.verify_user_with_password(user, password):
             raise AuthenticationFailed("Invalid password")
 
         return user
 
     @staticmethod
-    def signup(username: str, password: str, email: str, hashed_password: str):
+    def signup(username: str, password: str, email: str):
         user = UserService.create_user(
             email=email, username=username, password=password
         )

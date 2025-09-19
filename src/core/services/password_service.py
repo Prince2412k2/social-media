@@ -13,4 +13,5 @@ class PasswordService:
     def verify_user_with_password(user, raw_password):
         """validates db user to given password"""
         hashed = user.password
-        return check_password(raw_password, hashed)
+        is_valid = check_password(raw_password, hashed)
+        return is_valid
