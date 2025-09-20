@@ -1,10 +1,15 @@
-from enum import unique
 import logging
 from typing import Literal
+from boto3.s3.transfer import TransferConfig
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
+user_stroage = S3Boto3Storage(**settings.STORAGES["users"]["OPTIONS"])
+post_storage = S3Boto3Storage(**settings.STORAGES["posts"]["OPTIONS"])
+config = TransferConfig(multipart_threshold=30 * 1024 * 1024)
 
 
 class BaseManager(models.Manager):
@@ -46,7 +51,11 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
         unique=True,
     )
     bio = models.TextField(blank=True)
-    avatar = models.ImageField(blank=True, null=True)
+    avatar = models.ImageField(
+        blank=True,
+        null=True,
+        storage=user_stroage,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="following"
@@ -57,28 +66,9 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     def __str__(self):
         return f"{self.username} with email {self.email}"
 
-    @property
-    def following_users(self) -> models.QuerySet["User"]:
-        return self.following.all()  # pyright: ignore
-
-    def follow(self, user: "User"):
-        if user == self:
-            raise ValueError("Cannot follow yourself")
-        self.following.add(user)  # pyright: ignore
-
-    def unfollow(self, user: "User"):
-        if user in self.following.all():  # type: ignore
-            self.following.remove(user)  # pyright: ignore
-        else:
-            raise ValueError("Can not unfollow a user you dont follow")
-
-    def remove_follower(self, user: "User"):
-        if user in self.followers.all():  # type: ignore
-            self.followers.remove(user)  # removes the relationship in the join table
-        else:
-            raise ValueError(
-                "Can not remove a User from followers who doesnt follow you"
-            )
+    def user_profile_path(self, filename):
+        ext = filename.split(".")[-1]
+        return f"{self.id}/profile.{ext}"  # pyright: ignore User doesnt know its id yet
 
     def delete(self, using=None, keep_parents=False):  # pyright: ignore
         self.is_deleted = True
@@ -106,6 +96,12 @@ class Credential(BaseModel):
 
     def __str__(self):
         return f"{self.provider} for {self.user}"
+
+    # def user_post_path(self, filename):
+    #     import uuid, datetime
+    #     ext = filename.split(".")[-1]
+    #     ts = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    #     return f"{self.id}/{ts}-{uuid.uuid4().hex}.{ext}"
 
 
 Provider_Type = Literal[Credential.Provider.GOOGLE, Credential.Provider.GITHUB]

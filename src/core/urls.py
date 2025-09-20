@@ -15,6 +15,7 @@ from core.views.follow_view import (
     UnfollowUserView,
 )
 from core.views.user_view import (
+    UpdateUser,
     get_users,
     get_user,
 )
@@ -26,6 +27,7 @@ urlpatterns = []
 urlpatterns += [
     path("users/", get_users, name="get-users"),
     path("user/me/", get_user, name="get-users"),
+    path("user/profile/", UpdateUser.as_view(), name="get-users"),
 ]
 
 # AUTH endpoints

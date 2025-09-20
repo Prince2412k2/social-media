@@ -67,8 +67,48 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+##AWS config
+STORAGES = {
+    "users": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": "123456789",
+            "secret_key": "123456789",
+            "bucket_name": "users-bucket",
+            "endpoint_url": "http://127.0.0.1:9000/",
+            "region_name": "us-east-1",
+            "addressing_style": "path",
+        },
+    },
+    "posts": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": "123456789",
+            "secret_key": "123456789",
+            "bucket_name": "posts-bucket",
+            "endpoint_url": "http://127.0.0.1:9000/",
+            "region_name": "us-east-1",
+            "addressing_style": "path",
+        },
+    },
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": "123456789",
+            "secret_key": "123456789",
+            "bucket_name": "default-bucket",  # fallback default
+            "endpoint_url": "http://127.0.0.1:9000/",
+            "region_name": "us-east-1",
+            "addressing_style": "path",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",  # local static
+    },
+}
 
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -90,10 +130,8 @@ INSTALLED_APPS = [
     ##my apps
     "core",
     ##Storages
-    "Storages",
+    "storages",
 ]
-
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3,S3BOTO3Storage"
 
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -281,6 +319,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
+
 
 LANGUAGE_CODE = "en-us"
 
