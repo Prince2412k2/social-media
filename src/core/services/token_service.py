@@ -57,15 +57,9 @@ class TokenService:
     def renew_refresh_token(old_refresh_token: Any) -> RefreshToken:
         if not old_refresh_token:
             raise ValueError()
-        try:
-            refresh = TokenService.validate_refresh_token(old_refresh_token)
-        except TokenError:
-            raise
+        refresh = TokenService.validate_refresh_token(old_refresh_token)
         pk = refresh.access_token.get("user_id")
-        try:
-            user = UserService.get_user_by_pk(pk)
-        except User.DoesNotExist:
-            raise
+        user = UserService.get_user_by_pk(pk)
 
         new_refresh = TokenService.get_refresh_token_for_user(user)
         return new_refresh

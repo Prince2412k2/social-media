@@ -40,7 +40,6 @@ class GoogleAuthService(BaseAuthService):
         if response.status_code != 200 or token_info.get("aud") != GOOGLE_CLIENT_ID:
             logger.info(f"error while fetching token from {GOOGLE_GET_USER_URL=}")
             raise TokenError
-        logger.info(f"{token_info}")
         sub = token_info.get("sub")
         email = token_info.get("email")
         username = email.split("@")[0]

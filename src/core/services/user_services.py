@@ -1,8 +1,8 @@
 import logging
-from typing import Optional
-from django.contrib.auth.models import AnonymousUser
+from typing import Optional, Tuple
 import requests
 from django.db import transaction
+from storages.backends.s3 import mimetypes
 from core.models import Credential, User, Provider_Type
 from core.services.password_service import PasswordService
 from django.core.files.base import ContentFile
@@ -27,10 +27,17 @@ class UserService:
         user.save()
 
     @staticmethod
-    def resolve_avatar_url(content: str) -> bytes:
+    def resolve_avatar_url(content: str) -> Tuple[str, bytes]:
         res = requests.get(content, timeout=10)
         res.raise_for_status()
-        return res.content
+        content_type = res.headers.get("Content-Type")
+        ext = (
+            mimetypes.guess_extension(content_type.split(";")[0])
+            if content_type
+            else ""
+        )
+        file_name = f"profile{ext}"
+        return file_name, res.content
 
     @staticmethod
     def save_avatar(
@@ -41,19 +48,23 @@ class UserService:
         if not user.pk:
             raise ValueError("User must be saved before uploading avatar")
         try:
-            file_content = (
+            filename, file_content = (
                 UserService.resolve_avatar_url(filename)
                 if file_content is None
-                else file_content
+                else (filename, file_content)
             )
         except Exception as e:
             logger.info(
                 f"Failed to save avatar file for {user.pk} to bucket | errors =>{e}"
             )
             return None
+        logger.info(filename)
         ext = filename.split(".")[-1].lower()
         path = f"{user.pk}/profile.{ext}"
-        user.avatar.save(path, ContentFile(file_content))
+        if user.avatar:
+            user.avatar.delete(save=False)
+        user.avatar.save(path, ContentFile(file_content), save=True)
+        logger.info(user.avatar)
         return path
 
     @staticmethod
@@ -90,8 +101,8 @@ class UserService:
                     "password": password,
                 },
             )
-            if avatar and created:
-                UserService.save_avatar(user, avatar)
+            # if avatar and created:
+            UserService.save_avatar(user, avatar)
             if provider:
                 Credential.objects.update_or_create(
                     user=user, provider=provider, provider_id=provider_id

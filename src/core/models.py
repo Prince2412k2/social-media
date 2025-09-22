@@ -97,11 +97,25 @@ class Credential(BaseModel):
     def __str__(self):
         return f"{self.provider} for {self.user}"
 
-    # def user_post_path(self, filename):
-    #     import uuid, datetime
-    #     ext = filename.split(".")[-1]
-    #     ts = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
-    #     return f"{self.id}/{ts}-{uuid.uuid4().hex}.{ext}"
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+    image = models.ImageField(blank=True, null=True, storage=post_storage)
+    caption = models.TextField()
+    liked_by = models.ManyToManyField(User, related_name="liked_posts", blank=True)
+    likes_count = models.PositiveIntegerField(default=0)
+    comments_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
 
 
 Provider_Type = Literal[Credential.Provider.GOOGLE, Credential.Provider.GITHUB]

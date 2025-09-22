@@ -40,7 +40,6 @@ class UpdateUser(APIView):
     def put(self, request):
         user = request.user
         avatar = request.FILES.get("avatar")
-        logger.info(type(avatar))
         try:
             UserService.save_avatar(
                 user=user, filename=avatar.name, file_content=avatar.read()
@@ -54,8 +53,8 @@ class UpdateUser(APIView):
         user = request.user
         try:
             serializer = RequestUpdateUserSerializer(user)
-            serializer.is_valid(raise_exception=True)
+            data = serializer.data
         except Exception as e:
             return Response({"msg": "error"}, status=HTTP_400_BAD_REQUEST)
 
-        return Response({"msg": "success"}, status=HTTP_200_OK)
+        return Response(data, status=HTTP_200_OK)
