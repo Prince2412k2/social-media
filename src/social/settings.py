@@ -162,8 +162,15 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # optionally you can also have cookie-based JWT or other auths
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "1000/day",  # 100 requests per day per authenticated user
+        "anon": "100/day",  # 10 requests per day per anonymous user
+    },
 }
 REST_USE_JWT = True
 TOKEN_MODEL = None

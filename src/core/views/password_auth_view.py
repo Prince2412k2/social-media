@@ -2,6 +2,7 @@ import logging
 from dj_rest_auth.registration.views import RegisterView
 from django.db import IntegrityError
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class PasswordSignupView(RegisterView):
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
     def post(self, request):
         username = request.data.get("username")
         email = request.data.get("email")
@@ -46,6 +49,8 @@ class PasswordSignupView(RegisterView):
 
 
 class PasswordLoginView(LoginView):
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
     def post(self, request) -> Response:
         email = request.data.get("email")
         password = request.data.get("password")
@@ -84,6 +89,8 @@ class PasswordLoginView(LoginView):
 
 
 class TokenRefreshView(APIView):
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
     def get(self, request) -> Response:
         cookie_refresh_token = request.COOKIES.get("refresh_token")
         try:
@@ -118,6 +125,8 @@ class TokenRefreshView(APIView):
 
 
 class LogoutView(APIView):
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
     def get(self, request) -> Response:
         response = Response(
             {

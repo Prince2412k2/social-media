@@ -63,12 +63,6 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
-    def __str__(self):
-        return f"user({self.pk})"
-
-    def __repr__(self):
-        return f"{self.username} with email {self.email}"
-
     def user_profile_path(self, filename):
         ext = filename.split(".")[-1]
         return f"{self.id}/profile.{ext}"  # pyright: ignore User doesnt know its id yet
@@ -97,9 +91,6 @@ class Credential(BaseModel):
     class Meta:  # pyright: ignore
         unique_together = ("provider", "provider_id")
 
-    def __str__(self):
-        return f"{self.provider} for {self.user}"
-
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
@@ -109,9 +100,6 @@ class Post(models.Model):
     likes_count = models.PositiveIntegerField(default=0)
     comments_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return f"post({self.pk}) by {self.user}"
 
 
 class Comment(models.Model):

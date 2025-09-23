@@ -4,6 +4,7 @@ from django.forms import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
 from core.models import Post
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
-
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = PostSerializer
 
     def post(self, request):
@@ -59,6 +60,7 @@ class PostView(APIView):
 class DeletePostView(APIView):
     permission_classes = [IsAuthenticated]
 
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = PostIdSerializer
 
     def post(self, request):
@@ -85,6 +87,7 @@ class DeletePostView(APIView):
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
 
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = PostIdSerializer
 
     def post(self, request):
@@ -111,6 +114,7 @@ class LikePostView(APIView):
 class UnLikePostView(APIView):
     permission_classes = [IsAuthenticated]
 
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = PostIdSerializer
 
     def post(self, request):

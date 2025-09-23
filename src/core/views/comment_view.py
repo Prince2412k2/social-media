@@ -8,17 +8,16 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
 )
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
-from core.models import Comment
 from core.serializers.comment_serializer import (
-    CommentIdPostIdSerializer,
     CommentIdSerializer,
     CommentSerializer,
 )
 from core.serializers.post_serializer import (
     GetPostSerializer,
-    PostSerializer,
+    PostIdSerializer,
 )
 from core.services.comment_service import CommentService
 
@@ -29,6 +28,7 @@ logger = logging.getLogger(__name__)
 class CommentView(APIView):
     permission_classes = [IsAuthenticated]
 
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = CommentSerializer
 
     def post(self, request):
@@ -65,20 +65,48 @@ class CommentView(APIView):
         return Response(serialized_user.data, status=HTTP_200_OK)
 
 
+class GetCommenatsView(APIView):
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    serializer_class = PostIdSerializer
+
+    def post(self, request):
+        post_id = request.data.get("post_id")
+
+        try:
+            comment = CommentService.get_all(post_id)
+        except Exception as e:
+            logger.info(e)
+            return Response({"msg": str(e)}, status=HTTP_400_BAD_REQUEST)
+        try:
+            serialised_comments = CommentSerializer(
+                comment, context={"request": request}, many=True
+            )
+        except ValidationError:
+            return Response(
+                {"Status": "Failed", "msg": "Serialization Error"},
+                status=HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(serialised_comments.data, status=HTTP_200_OK)
+
+    def get(self, request):
+        user = request.user
+        serialized_user = GetPostSerializer(user, context={"request": request})
+        return Response(serialized_user.data, status=HTTP_200_OK)
+
+
 class DeleteCommentView(APIView):
     permission_classes = [IsAuthenticated]
-
-    serializer_class = CommentIdPostIdSerializer
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    serializer_class = CommentIdSerializer
 
     def post(self, request):
         user = request.user
-        post_id = request.data.get("post_id")
         comment_id = request.data.get("comment_id")
 
         try:
-            comment = CommentService.delete(
-                user=user, post_id=post_id, comment_id=comment_id
-            )
+            CommentService.delete(user=user, comment_id=comment_id)
         except PermissionDenied:
             return Response(
                 {

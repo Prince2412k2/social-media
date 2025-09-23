@@ -63,11 +63,13 @@
       ↳ PostService -> Post
     user/post/dislike" -> UnLikePostView
       ↳ PostService -> Post
+    user/post/del -> DeletePostView
+      ↳ CommentService -> Comment
     
 ## comment endpoints
+    user/post/comments -> GetCommenatsView
+      ↳ CommentService -> Comment
     user/post/comment -> CommentView
       ↳ CommentService -> Comment
     user/post/comment/del -> DeleteCommentView
-      ↳ CommentService -> Comment
-    user/post/del -> DeletePostView
       ↳ CommentService -> Comment

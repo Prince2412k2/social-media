@@ -2,6 +2,7 @@ import logging
 from typing import Type
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.exceptions import TokenError
 from dj_rest_auth.registration.views import SocialLoginView
 from django.db import IntegrityError
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 class BaseSocialAuthView(SocialLoginView):
     auth_service: Type[BaseAuthService]
     provider: Provider_Type
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get(self, request):
         code = request.query_params.get("code", False)

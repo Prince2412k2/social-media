@@ -1,7 +1,8 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 from core.serializers.user_serializer import DBUserSerializer
 from core.serializers.follow_serializer import FollowSerializer
@@ -11,6 +12,7 @@ from ..models import User
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def FollowUserView(request):
     self_user = request.user
     serializer = FollowSerializer(data=request.data, context={"request": request})
@@ -30,6 +32,7 @@ def FollowUserView(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def UnfollowUserView(request):
     self_user = request.user
     serializer = FollowSerializer(data=request.data, context={"request": request})
@@ -57,6 +60,7 @@ def UnfollowUserView(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def RemoveFollower(request):
     self_user = request.user
     serializer = FollowSerializer(data=request.data, context={"request": request})
@@ -84,6 +88,7 @@ def RemoveFollower(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def GetFollowers(request):
     self_user = request.user
     users = FollowService.get_followers(self_user)
@@ -96,6 +101,7 @@ def GetFollowers(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([UserRateThrottle, AnonRateThrottle])
 def GetFollowing(request):
     self_user = request.user
     users = FollowService.get_following(self_user)

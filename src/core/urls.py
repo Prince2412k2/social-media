@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.views.comment_view import CommentView, DeleteCommentView
+from core.views.comment_view import CommentView, DeleteCommentView, GetCommenatsView
 from core.views.password_auth_view import (
     PasswordLoginView,
     PasswordSignupView,
@@ -59,6 +59,7 @@ urlpatterns += [
 ]
 ##Comment Crud endpoints
 urlpatterns += [
+    path("user/post/comments", GetCommenatsView.as_view(), name="add-comment"),
     path("user/post/comment", CommentView.as_view(), name="add-comment"),
     path("user/post/comment/del", DeleteCommentView.as_view(), name="delete-comment"),
     # path("user/post/del", DeletePostView.as_view(), name="delte-post"),

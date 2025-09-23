@@ -4,8 +4,6 @@ from core.models import Comment
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-
     class Meta:  # pyright: ignore
         model = Comment
         fields = [
@@ -18,7 +16,3 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class CommentIdSerializer(serializers.Serializer):
     comment_id = serializers.IntegerField()
-
-
-class CommentIdPostIdSerializer(CommentIdSerializer):
-    post_id = serializers.IntegerField()
