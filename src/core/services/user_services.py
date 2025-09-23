@@ -81,7 +81,7 @@ class UserService:
         return user
 
     @staticmethod
-    def create_user(
+    def get_or_create(
         email: str,
         username: str,
         provider: Optional[Provider_Type] = None,
@@ -92,6 +92,7 @@ class UserService:
     ) -> User:
         if password:
             return UserService._create_user_with_pass(email, username, password)
+
         with transaction.atomic():
             user, created = User.objects.get_or_create(
                 email=email,
@@ -107,6 +108,26 @@ class UserService:
                 Credential.objects.update_or_create(
                     user=user, provider=provider, provider_id=provider_id
                 )
+        return user
+
+    @staticmethod
+    def update(
+        user,
+        avatar,
+        email: Optional[str],
+        username: Optional[str],
+        bio: str = "",
+    ) -> User:
+        with transaction.atomic():
+            user, created = User.objects.get_or_create(
+                email=email if email else user.email,
+                defaults={
+                    "username": username if username else User.username,
+                    "bio": bio if bio else user.bio,
+                },
+            )
+            if avatar:
+                UserService.save_avatar(user, avatar.name.avatar.read())
         return user
 
 

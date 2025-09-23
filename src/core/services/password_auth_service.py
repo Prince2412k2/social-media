@@ -20,7 +20,7 @@ class PasswordAuthService:
 
     @staticmethod
     def signup(username: str, password: str, email: str):
-        user = UserService.create_user(
+        user = UserService.get_or_create(
             email=email, username=username, password=password
         )
         return user

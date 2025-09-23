@@ -32,7 +32,7 @@ def get_user(request) -> Response:
     return Response(serializer.data)
 
 
-class UpdateUser(APIView):
+class UpdateUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     serializer_class = RequestUpdateUserSerializer
@@ -40,17 +40,22 @@ class UpdateUser(APIView):
     def put(self, request):
         user = request.user
         avatar = request.FILES.get("avatar")
+        username = request.data.get("username", None)
+        email = request.data.get("email", None)
+        bio = request.data.get("bio", None)
+
         try:
-            UserService.save_avatar(
-                user=user, filename=avatar.name, file_content=avatar.read()
+            # TODO:Handle proper excepttions
+            UserService.update(
+                user=user, avatar=avatar, email=email, username=username, bio=bio
             )
         except Exception as e:
-            raise
             return Response({"msg": "error"}, status=HTTP_400_BAD_REQUEST)
         return Response({"msg": "success"}, status=HTTP_200_OK)
 
     def get(self, request):
         user = request.user
+        # TODO:Handle proper excepttions
         try:
             serializer = RequestUpdateUserSerializer(user)
             data = serializer.data

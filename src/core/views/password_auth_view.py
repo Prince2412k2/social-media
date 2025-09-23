@@ -22,7 +22,7 @@ class PasswordSignupView(RegisterView):
         email = request.data.get("email")
         password = request.data.get("password1")
         try:
-            user = UserService.create_user(
+            user = UserService.get_or_create(
                 email=email, username=username, password=password
             )
         except IntegrityError:

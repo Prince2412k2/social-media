@@ -45,7 +45,7 @@ class GihubAuthService(BaseAuthService):
         email = GihubAuthService.get_email_helper(id_token)
         username = token_info.get("login")
         avatar = token_info.get("avatar_url")
-        user = UserService.create_user(
+        user = UserService.get_or_create(
             email, username, Credential.Provider.GITHUB, provider_id=sub, avatar=avatar
         )
         return user

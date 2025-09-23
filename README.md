@@ -23,12 +23,51 @@
   - API rate limiting and permissions
   - Interactive API documentation
 
-# BugReport
+## User endpoints
+    "users/" -> get_users 
+    "user/me/" -> get_user
+    "user/profile/" -> UpdateUserView -> UserService.Update->User
 
---> [!ERROR] : **Refresh token error**
-  - refresh-token was throwing error -> no user for given credentials even when if it was valid.
-### PROBLEM
-  - simplejwt in DRF only works for AbstractUser provided by django
-### FIX
-  - added `AUTH_USER_MODEL = "core.User"` in settings to define what class we are using as user for jwt-auth tokens to verify
-  - added fake properties to User model in core.models to make django think its a abstarctuser
+## Auth endpoints
+    auth/signup -> PasswordSignupView 
+      ↳ PasswordService | UserService | TokenService  -> User 
+    auth/login -> PasswordLoginView 
+      ↳ PasswordService | UserService | TokenService -> User 
+    auth/refresh -> TokenRefreshView
+      ↳ PasswordService | TokenService 
+    auth/logout/ -> LogoutView
+      ↳ TokenService 
+    auth/google/ -> GoogleAuthView
+      ↳ SocialAuthView -> GoogleAuthService -> Cred | User
+    auth/github/ -> GithubAuthView
+      ↳ SocialAuthView -> GitHubAuthService -> Cred | User
+
+## followers endpoints
+    user/follow" -> FollowUserView
+      ↳ FollowService -> User
+    user/unfollow" -> UnfollowUserView
+      ↳ FollowService -> User
+    user/remove" -> RemoveFollower
+      ↳ FollowService -> User
+    user/followers" -> GetFollowers
+      ↳ FollowService -> User
+    user/following" -> GetFollowing
+      ↳ FollowService -> User
+
+## post endpoints
+    user/post" -> PostView
+      ↳ PostService -> Post
+    user/post/del" -> DeletePostView
+      ↳ PostService -> Post
+    user/post/like" -> LikePostView
+      ↳ PostService -> Post
+    user/post/dislike" -> UnLikePostView
+      ↳ PostService -> Post
+    
+## comment endpoints
+    user/post/comment -> CommentView
+      ↳ CommentService -> Comment
+    user/post/comment/del -> DeleteCommentView
+      ↳ CommentService -> Comment
+    user/post/del -> DeletePostView
+      ↳ CommentService -> Comment

@@ -44,7 +44,7 @@ class GoogleAuthService(BaseAuthService):
         email = token_info.get("email")
         username = email.split("@")[0]
         avatar = token_info.get("picture")
-        user = UserService.create_user(
+        user = UserService.get_or_create(
             email, username, Credential.Provider.GOOGLE, avatar=avatar, provider_id=sub
         )
         return user

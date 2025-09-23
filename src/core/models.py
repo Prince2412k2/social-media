@@ -64,6 +64,9 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
+        return f"user({self.pk})"
+
+    def __repr__(self):
         return f"{self.username} with email {self.email}"
 
     def user_profile_path(self, filename):
@@ -106,6 +109,9 @@ class Post(models.Model):
     likes_count = models.PositiveIntegerField(default=0)
     comments_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"post({self.pk}) by {self.user}"
 
 
 class Comment(models.Model):
