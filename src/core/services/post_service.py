@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.db import transaction
 from core.models import Post
+from django.shortcuts import get_object_or_404
 
 
 class PostService:
@@ -45,3 +46,17 @@ class PostService:
             post.image.delete(save=False)
             post.image.save(file_name, ContentFile(image_content), save=True)
         post.save()
+
+    @staticmethod
+    def like(user, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        if post.liked_by.filter(id=user.id).exists():
+            raise ValueError("User has already liked this post")
+        post.liked_by.add(user)
+
+    @staticmethod
+    def undislike(user, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        if not post.liked_by.filter(id=user.id).exists():
+            raise ValueError("Can't unlike a post you haven't liked yet")
+        post.liked_by.remove(user)

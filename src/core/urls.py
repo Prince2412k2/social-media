@@ -1,13 +1,13 @@
 from django.urls import path
 
-from core.views.comment_view import CommentView
+from core.views.comment_view import CommentView, DeleteCommentView
 from core.views.password_auth_view import (
     PasswordLoginView,
     PasswordSignupView,
     TokenRefreshView,
     LogoutView,
 )
-from core.views.post_view import DeletePostView, PostView
+from core.views.post_view import DeletePostView, UnLikePostView, LikePostView, PostView
 from core.views.social_auth_views import GoogleAuthView, GithubAuthView
 from core.views.follow_view import (
     FollowUserView,
@@ -54,9 +54,12 @@ urlpatterns += [
 urlpatterns += [
     path("user/post", PostView.as_view(), name="post"),
     path("user/post/del", DeletePostView.as_view(), name="delte-post"),
+    path("user/post/like", LikePostView.as_view(), name="like-post"),
+    path("user/post/dislike", UnLikePostView.as_view(), name="like-post"),
 ]
 ##Comment Crud endpoints
 urlpatterns += [
-    path("user/post/comment", CommentView.as_view(), name="post"),
+    path("user/post/comment", CommentView.as_view(), name="add-comment"),
+    path("user/post/comment/del", DeleteCommentView.as_view(), name="delete-comment"),
     # path("user/post/del", DeletePostView.as_view(), name="delte-post"),
 ]

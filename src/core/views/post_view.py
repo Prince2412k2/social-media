@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from core.models import Post
 from core.serializers.post_serializer import (
-    DeletePostSerializer,
+    PostIdSerializer,
     GetPostSerializer,
     PostSerializer,
 )
@@ -59,7 +59,7 @@ class PostView(APIView):
 class DeletePostView(APIView):
     permission_classes = [IsAuthenticated]
 
-    serializer_class = DeletePostSerializer
+    serializer_class = PostIdSerializer
 
     def post(self, request):
         pk = request.data.get("post_id")
@@ -79,4 +79,66 @@ class DeletePostView(APIView):
             )
         return Response(
             {"Status": "Success", "msg": "Deletion successfull"}, status=HTTP_200_OK
+        )
+
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = PostIdSerializer
+
+    def post(self, request):
+        pk = request.data.get("post_id")
+        user = request.user
+
+        try:
+            PostService.like(user, post_id=pk)
+        except Post.DoesNotExist:
+            return Response(
+                {"Status": "Failed", "msg": "Post with given id doesnt exist"},
+                status=HTTP_400_BAD_REQUEST,
+            )
+        except PermissionDenied as e:
+            return Response(
+                {"Status": "Failed", "msg": str(e)},
+                status=HTTP_403_FORBIDDEN,
+            )
+        return Response(
+            {"Status": "Success", "msg": "Post liked succesfully"}, status=HTTP_200_OK
+        )
+
+
+class UnLikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = PostIdSerializer
+
+    def post(self, request):
+        pk = request.data.get("post_id")
+        user = request.user
+
+        try:
+            PostService.undislike(user, post_id=pk)
+        except Post.DoesNotExist:
+            return Response(
+                {"Status": "Failed", "msg": "Post with given id doesnt exist"},
+                status=HTTP_400_BAD_REQUEST,
+            )
+        except ValueError:
+            return Response(
+                {
+                    "Status": "Failed",
+                    "msg": "you cant dislike a post you havent liked yet",
+                },
+                status=HTTP_400_BAD_REQUEST,
+            )
+
+        except PermissionDenied as e:
+            return Response(
+                {"Status": "Failed", "msg": str(e)},
+                status=HTTP_403_FORBIDDEN,
+            )
+        return Response(
+            {"Status": "Success", "msg": "Post Disliked successfull"},
+            status=HTTP_200_OK,
         )

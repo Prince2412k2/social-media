@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Post, User
+from core.models import Post
 from core.serializers.comment_serializer import CommentSerializer
 
 
@@ -52,5 +52,5 @@ class GetPostSerializer(serializers.Serializer):
         return 0
 
 
-class DeletePostSerializer(serializers.Serializer):
+class PostIdSerializer(serializers.Serializer):
     post_id = serializers.IntegerField()

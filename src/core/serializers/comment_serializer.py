@@ -14,3 +14,11 @@ class CommentSerializer(serializers.ModelSerializer):
             "post",
             "text",
         ]
+
+
+class CommentIdSerializer(serializers.Serializer):
+    comment_id = serializers.IntegerField()
+
+
+class CommentIdPostIdSerializer(CommentIdSerializer):
+    post_id = serializers.IntegerField()
