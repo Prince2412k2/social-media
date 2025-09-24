@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.40.34",
+    "channels>=4.3.1",
     "cloudflare>=4.3.1",
     "colorlog>=6.9.0",
     "cryptography>=45.0.7",
@@ -24,13 +25,14 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "psycopg[binary]>=3.2.10",
     "requests>=2.32.5",
+    "uvicorn[standard]>=0.37.0",
 ]
 
 [tool.poe.tasks]
 make = "./src/manage.py makemigrations"
 migrate = "./src/manage.py migrate"
 run = "./src/manage.py runserver"
-srun = "doppler run -- ./src/manage.py runserver"
+srun = "doppler run -- uvicorn social.asgi:application --reload --port 8000 --app-dir ./src/ "
 shell = "./src/manage.py shell"
 flush="./src/manage.py flush"
 reset_db="./src/manage.py resetdb"

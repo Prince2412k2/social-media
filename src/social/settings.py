@@ -110,6 +110,9 @@ STORAGES = {
 
 # Application definition
 INSTALLED_APPS = [
+    ##websocket
+    "channels",
+    ## third-party
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -117,7 +120,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",  # for allauth
-    ## third-party
+    ## third-party-end
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -129,6 +132,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     ##my apps
     "core",
+    "chatapp",
     ##Storages
     "storages",
     ##CORS
@@ -241,8 +245,14 @@ LOGGING = {
     },
 }
 
+# ASGI application
+ASGI_APPLICATION = "social.asgi.application"
 
-# Signup fields (new-style)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
 # NOTE: ...manual config ends here
@@ -283,18 +293,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "social.wsgi.application"
+# WSGI_APPLICATION = "social.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 tmpPostgres = urlparse(POSTGRES)
 
