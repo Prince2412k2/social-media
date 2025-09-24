@@ -60,6 +60,7 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="following"
     )
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 

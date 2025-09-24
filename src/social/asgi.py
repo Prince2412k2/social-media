@@ -11,10 +11,17 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from chatapp import routing
-import uvicorn
+import django
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "social.settings")
+django.setup()
+
+try:
+    from chatapp import routing
+except Exception:
+    raise
+
 
 application = ProtocolTypeRouter(
     {
