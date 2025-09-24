@@ -131,6 +131,8 @@ INSTALLED_APPS = [
     "core",
     ##Storages
     "storages",
+    ##CORS
+    "corsheaders",
 ]
 
 
@@ -258,7 +260,11 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     ##Permissions middleware
     "core.middlewares.permission_middleware.CookieToHeaderMiddleware",
+    # Cors
+    "corsheaders.middleware.CorsMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # NOTE: only True for dev, lock it down for dev
 
 ROOT_URLCONF = "social.urls"
 
