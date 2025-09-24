@@ -35,7 +35,7 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
 
 
-POSTGRES = os.environ.get("POSTGRES")
+POSTGRES = os.environ.get("POSTGRES_LOCAL")
 
 
 GITHUB_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
