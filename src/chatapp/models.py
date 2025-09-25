@@ -18,3 +18,10 @@ class Message(models.Model):
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def receiver(self):
+        """
+        Returns the other participant in the conversation.
+        """
+        return self.conversation.participants.exclude(id=self.sender.id).first()
