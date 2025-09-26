@@ -28,7 +28,7 @@ class TokenService:
             "access_token",
             access_token,
             httponly=True,
-            samesite="Lax",
+            samesite="None",
             secure=not DEBUG,
             max_age=SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
         )
@@ -36,7 +36,7 @@ class TokenService:
             "refresh_token",
             refresh_token,
             httponly=True,
-            samesite="Lax",
+            samesite="None",
             secure=not DEBUG,
             max_age=SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
         )

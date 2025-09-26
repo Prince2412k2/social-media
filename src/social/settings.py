@@ -51,6 +51,8 @@ secrets = {
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URI,
+    GITHUB_CLIENT_SECRET,
+    GITHUB_CLIENT_ID,
     POSTGRES,
 }
 
@@ -273,7 +275,10 @@ MIDDLEWARE = [
     # Cors
     "corsheaders.middleware.CorsMiddleware",
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # your deployed frontend
+]
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True  # NOTE: only True for dev, lock it down for dev
 
 ROOT_URLCONF = "social.urls"

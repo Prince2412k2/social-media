@@ -28,7 +28,7 @@ class GihubAuthService(BaseAuthService):
         }
         res = requests.post(GITHUB_ACCESS_TOKEN_URL, data=body, headers=headers)
         if not res.ok:
-            logger.info(f"error while fetching token from {GITHUB_ACCESS_TOKEN_URL=}")
+            logger.info(f"error while fetching token from {GITHUB_ACCESS_TOKEN_URL=} ")
 
         res.raise_for_status()
         return res.json().get("access_token")
@@ -38,7 +38,7 @@ class GihubAuthService(BaseAuthService):
         headers = {"Authorization": f"token {id_token}"}
         response = requests.get(GITHUB_GET_USER_URL, headers=headers)
         if not response.ok:
-            logger.info(f"error while fetching token from {GITHUB_GET_USER_URL=}")
+            logger.info(f"error while fetching details from {GITHUB_GET_USER_URL=}")
             raise TokenError
         token_info = response.json()
         sub = token_info.get("sub")
