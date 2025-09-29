@@ -1,38 +1,27 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
-import './App.css';
-import Gallery from './Components/gallery/gallery';
-import TopBar from './Components/topBar/topBar';
-import PinPage from './Components/pinPage/PinPage';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
 
-import LeftBar from './Components/leftBar/leftBar';
+const queryClient = new QueryClient();
 
-// Simple placeholder components for Login and Signup
-const Login = () => <div className="text-center p-8">Login Page</div>;
-const Signup = () => <div className="text-center p-8">Signup Page</div>;
-
-const AppLayout = () => (
-  <div className="app">
-    <LeftBar />
-    <div className="content-with-sidebar">
-      <TopBar />
-      <main className="content">
-        <Outlet /> 
-      </main>
-    </div>
-  </div>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<AppLayout />}>
-        <Route index element={<Gallery />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="pin/:id" element={<PinPage />} />
-      </Route>
-    </Routes>
-  );
-}
 
 export default App;

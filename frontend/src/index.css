@@ -2,125 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
-.masonry-grid {
-  display: flex;
-  margin-left: -1rem; /* gutter size offset */
-  width: auto;
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Modern Pinterest-inspired color palette */
+    --background: 20 20% 98%;
+    --foreground: 210 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 15%;
+
+    /* Warm coral-amber gradient primary */
+    --primary: 14 90% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 25 95% 65%;
+
+    --secondary: 20 40% 95%;
+    --secondary-foreground: 210 20% 15%;
+
+    --muted: 20 30% 94%;
+    --muted-foreground: 210 10% 50%;
+
+    --accent: 25 70% 88%;
+    --accent-foreground: 210 20% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 20 20% 90%;
+    --input: 20 20% 92%;
+    --ring: 14 90% 60%;
+
+    /* Custom design tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(14 90% 60%), hsl(25 95% 65%));
+    --gradient-subtle: linear-gradient(180deg, hsl(20 30% 99%), hsl(20 20% 96%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.8), hsl(0 0% 98% / 0.4));
+    
+    --shadow-elegant: 0 10px 30px -10px hsl(14 90% 60% / 0.15);
+    --shadow-hover: 0 20px 40px -10px hsl(14 90% 60% / 0.25);
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.1);
+    
+    --blur-glass: blur(12px);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
-.masonry-grid_column {
-  padding-left: 1rem; /* gutter size */
-  background-clip: padding-box;
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-.pin-page-container {
-  display: flex;
-  margin: 2rem auto;
-  padding: 2rem;
-  max-width: 1000px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border-radius: 1rem;
-  background-color: white;
-}
-
-.pin-page-left {
-  flex: 1;
-  padding-right: 2rem;
-}
-
-.pin-page-left img {
-  width: 100%;
-  border-radius: 1rem;
-}
-
-.pin-page-right {}
-
-.pin-detail-layout {
-  max-width: 1000px;
-  margin: 2rem auto;
-}
-
-.comments-section {
-  margin-top: 2rem;
-}
-
-.left-bar {
-  width: 240px;
-  padding: 1.5rem;
-  background-color: #f9fafb; /* gray-50 */
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.left-bar-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.left-bar-nav li a {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  color: #111827; /* gray-900 */
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.left-bar-nav li a:hover {
-  background-color: #e5e7eb; /* gray-200 */
-}
-
-.left-bar-nav li a svg {
-  margin-right: 1rem;
-  font-size: 1.5rem;
-}
-
-.content-with-sidebar {
-  margin-left: 240px;
-}
-
-.pin-detail-layout {
-  max-width: 1000px;
-  margin: 2rem auto;
-}
-
-.comments-section {
-  margin-top: 2rem;
-
-.comments-section {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background-color: #f9fafb; /* gray-50 */
-  border-radius: 1rem;
-}
-
-.comment {
-  margin-top: 1rem;
-}
-
-.comment-form {
-  margin-top: 1.5rem;
-  display: flex;
-}
-
-.comment-input {
-  flex-grow: 1;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db; /* gray-300 */
-  border-radius: 0.75rem;
-}
-
-.comment-button {
-  padding: 0.75rem 1.5rem;
-  margin-left: 0.5rem;
-  background-color: #ef4444; /* red-500 */
-  color: white;
-  border-radius: 0.75rem;
-  border: none;
-  cursor: pointer;
+  body {
+    @apply bg-background text-foreground;
+  }
 }
