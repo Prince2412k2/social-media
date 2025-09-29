@@ -1,11 +1,13 @@
 import logging
 from django.core.exceptions import PermissionDenied
+from django.db.models import Func
 from django.forms import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 
 from core.models import Post
 from core.serializers.post_serializer import (
@@ -17,6 +19,10 @@ from core.services.post_service import PostService
 
 
 logger = logging.getLogger(__name__)
+
+
+class RandomOrder(Func):
+    function = "RANDOM"
 
 
 class PostView(APIView):
@@ -55,6 +61,20 @@ class PostView(APIView):
         user = request.user
         serialized_user = GetPostSerializer(user, context={"request": request})
         return Response(serialized_user.data, status=HTTP_200_OK)
+
+
+class PostFetchView(APIView):
+    # permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    serializer_class = PostSerializer
+    pagination_class = PageNumberPagination()
+
+    def get(self, request):
+        queryset = Post.objects.order_by(RandomOrder())
+        paginator = self.pagination_class
+        page = paginator.paginate_queryset(queryset, request, view=self)
+        serializer = self.serializer_class(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class DeletePostView(APIView):

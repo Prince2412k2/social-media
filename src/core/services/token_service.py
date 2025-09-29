@@ -28,17 +28,19 @@ class TokenService:
             "access_token",
             access_token,
             httponly=True,
-            samesite="None",
+            samesite="Lax",
             secure=not DEBUG,
             max_age=SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+            path="/",
         )
         response.set_cookie(
             "refresh_token",
             refresh_token,
             httponly=True,
-            samesite="None",
+            samesite="Lax",
             secure=not DEBUG,
             max_age=SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+            path="/",
         )
         return response
 

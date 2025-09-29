@@ -35,7 +35,7 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
 
 
-POSTGRES = os.environ.get("POSTGRES")
+POSTGRES = os.environ.get("POSTGRES_LOCAL")
 
 
 GITHUB_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
@@ -179,6 +179,8 @@ REST_FRAMEWORK = {
         "user": "1000/day",  # 100 requests per day per authenticated user
         "anon": "100/day",  # 10 requests per day per anonymous user
     },
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 30,
 }
 REST_USE_JWT = True
 TOKEN_MODEL = None
@@ -188,8 +190,8 @@ REST_AUTH = {
     "JWT_SERIALIZER": "core.serializer.CustomJWTSerializer",
     "JWT_AUTH_COOKIE": "access_token",
     "JWT_AUTH_REFRESH_COOKIE": "refresh_token",
-    "JWT_AUTH_COOKIE_SECURE": True,  # True in production
-    "JWT_AUTH_HTTPONLY": True,  # JS cannot read cookie
+    "JWT_AUTH_COOKIE_SECURE": not DEBUG,  # True in production
+    "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SAMESITE": "Lax",
     "JWT_AUTH_COOKIE_USE_CSRF": False,
     "JWT_AUTH_RETURN_EXPIRATION": True,
@@ -276,7 +278,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # your deployed frontend
+    "http://localhost:8080",  # your deployed frontend
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True  # NOTE: only True for dev, lock it down for dev
