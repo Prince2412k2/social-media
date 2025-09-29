@@ -11,10 +11,9 @@ const Profile = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-gradient-subtle">
-        <AppSidebar />
-        <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-white/10 px-4">
+          <div className="min-h-screen flex w-full bg-gradient-subtle">
+            <AppSidebar />
+            <SidebarInset className="flex-1 ml-[4rem]">          <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-white/10 px-4 bg-background">
             <div className="flex-1">
               <Header />
             </div>

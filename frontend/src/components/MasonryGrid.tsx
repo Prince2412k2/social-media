@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PinCard from "./PinCard";
 import { Pin } from "@/data/pins";
 
@@ -7,7 +7,7 @@ interface MasonryGridProps {
   onPinClick?: (pin: Pin) => void;
 }
 
-const MasonryGrid = ({ pins, onPinClick }: MasonryGridProps) => {
+const MasonryGrid = React.memo(({ pins, onPinClick }: MasonryGridProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState(4);
 
@@ -64,6 +64,6 @@ const MasonryGrid = ({ pins, onPinClick }: MasonryGridProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default MasonryGrid;
