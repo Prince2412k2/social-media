@@ -10,21 +10,9 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center space-x-8">
             <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Pinspire
+              Social
             </h1>
-            
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Button variant="ghost" className="text-foreground hover:text-primary">
-                Home
-              </Button>
-              <Button variant="ghost" className="text-foreground hover:text-primary">
-                Explore
-              </Button>
-              <Button variant="ghost" className="text-foreground hover:text-primary">
-                Create
-              </Button>
-            </nav>
+
           </div>
 
           {/* Search Bar */}

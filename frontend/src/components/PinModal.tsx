@@ -12,7 +12,7 @@ interface PinModalProps {
 
 const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
   const [isLiked, setIsLiked] = useState(false);
-
+  const [isFollowed, setIsFollowed] = useState(false);
   if (!pin) return null;
 
   return (
@@ -39,7 +39,7 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
           {/* Content Section */}
           <div className="p-8">
             <DialogTitle className="sr-only">Pin Details</DialogTitle>
-            
+
             {/* Header Actions */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex space-x-2">
@@ -49,22 +49,15 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
                   onClick={() => setIsLiked(!isLiked)}
                   className="transition-smooth"
                 >
-                  <Heart 
-                    className={`h-4 w-4 mr-2 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} 
+                  <Heart
+                    className={`h-4 w-4 mr-2 ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
                   />
                   {isLiked ? 'Liked' : 'Like'}
                 </Button>
-                <Button variant="outline" size="sm">
-                  <Share className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
+
               </div>
-              
-              <Button
-                className="bg-gradient-primary text-white hover:shadow-hover transition-smooth"
-              >
-                Save
-              </Button>
+
+
             </div>
 
             {/* Pin Details */}
@@ -85,13 +78,21 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
                     {pin.author.charAt(0)}
                   </span>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">
-                    {pin.author}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {pin.category}
-                  </p>
+                <div className="flex flex-row gap-10">
+                  <div>
+                    <p className="font-medium text-foreground">
+                      {pin.author}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {pin.category}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setIsFollowed(!isFollowed)}
+                    className="bg-gradient-primary text-white hover:shadow-hover transition-smooth"
+                  >
+                    {isFollowed ? "unfollow" : "follow"}
+                  </Button>
                 </div>
               </div>
 
@@ -105,9 +106,6 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
                     </span>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
               </div>
 
               {/* Comments Section */}

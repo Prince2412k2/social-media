@@ -21,24 +21,23 @@ const Index = () => {
   };
 
   // Duplicate pins to create more content for demo
-  const allPins = [...dummyPins, ...dummyPins, ...dummyPins];
+  const allPins = dummyPins;
 
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gradient-subtle">
         <AppSidebar />
-        
+
         <SidebarInset className="flex-1">
           <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/10 px-4">
-            <SidebarTrigger className="-ml-1" />
             <div className="flex-1">
               <Header />
             </div>
           </header>
-          
+
           <main className="flex-1 pb-8">
-            <MasonryGrid 
-              pins={allPins} 
+            <MasonryGrid
+              pins={allPins}
               onPinClick={handlePinClick}
             />
           </main>
