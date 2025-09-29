@@ -1,1 +1,126 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.masonry-grid {
+  display: flex;
+  margin-left: -1rem; /* gutter size offset */
+  width: auto;
+}
+
+.masonry-grid_column {
+  padding-left: 1rem; /* gutter size */
+  background-clip: padding-box;
+}
+
+.pin-page-container {
+  display: flex;
+  margin: 2rem auto;
+  padding: 2rem;
+  max-width: 1000px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 1rem;
+  background-color: white;
+}
+
+.pin-page-left {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.pin-page-left img {
+  width: 100%;
+  border-radius: 1rem;
+}
+
+.pin-page-right {}
+
+.pin-detail-layout {
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.comments-section {
+  margin-top: 2rem;
+}
+
+.left-bar {
+  width: 240px;
+  padding: 1.5rem;
+  background-color: #f9fafb; /* gray-50 */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.left-bar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.left-bar-nav li a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #111827; /* gray-900 */
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.left-bar-nav li a:hover {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+.left-bar-nav li a svg {
+  margin-right: 1rem;
+  font-size: 1.5rem;
+}
+
+.content-with-sidebar {
+  margin-left: 240px;
+}
+
+.pin-detail-layout {
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.comments-section {
+  margin-top: 2rem;
+
+.comments-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f9fafb; /* gray-50 */
+  border-radius: 1rem;
+}
+
+.comment {
+  margin-top: 1rem;
+}
+
+.comment-form {
+  margin-top: 1.5rem;
+  display: flex;
+}
+
+.comment-input {
+  flex-grow: 1;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.75rem;
+}
+
+.comment-button {
+  padding: 0.75rem 1.5rem;
+  margin-left: 0.5rem;
+  background-color: #ef4444; /* red-500 */
+  color: white;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+}

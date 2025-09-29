@@ -1,13 +1,14 @@
 import axios from "axios"
 import { useEffect, useState, type FormEvent, type ReactElement } from "react"
 import Alert from "./alerts"
-
+import { useNavigate } from "react-router-dom"
 
 export default function Login(): ReactElement {
-  const URL: string = "http://127.0.0.1:8000"
+  const URL: string = "http://localhost:8000"
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [failed, setFailed] = useState<boolean>(false)
+  const navigate = useNavigate();
   useEffect(() => {
 
     const checkLoginStatus = async () => {
@@ -127,9 +128,9 @@ export default function Login(): ReactElement {
           </form>
           <p className="mt-10 text-center text-sm/6 text-gray-500">
             Not a member?{' '}
-            <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            <button onClick={() => { navigate("/signup") }} className="font-semibold text-indigo-600 hover:text-indigo-500">
               Register Now
-            </a>
+            </button>
           </p>
           <div className="grid grid-cols-[1fr_auto_1fr] items-center my-8 gap-4">
             <div className="h-px bg-indigo-300"></div>
