@@ -26,18 +26,6 @@ const Header = () => {
             </div>
           </div>
 
-          {/* User Actions */}
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button className="bg-gradient-primary text-white hover:shadow-hover transition-smooth">
-              Log in
-            </Button>
-          </div>
         </div>
       </div>
     </header>

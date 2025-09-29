@@ -1,8 +1,23 @@
+import { Link } from "react-router-dom";
 import { X, Heart, Share, Download, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Pin } from "@/data/pins";
 import { useState } from "react";
+
+interface Pin {
+  id: number;
+  user: string;
+  image: string;
+  caption: string;
+  likes_count: number;
+  liked_by_user: boolean;
+  comments: {
+    id: number;
+    user: number;
+    post: number;
+    text: string;
+  }[];
+}
 
 interface PinModalProps {
   pin: Pin | null;
@@ -23,7 +38,7 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
           <div className="relative overflow-hidden">
             <img
               src={pin.image}
-              alt={pin.title}
+              alt={pin.caption}
               className="w-full h-full object-cover"
             />
             <Button
@@ -64,37 +79,39 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
             <div className="space-y-6">
               <div>
                 <h2 className="text-2xl font-bold text-foreground mb-3">
-                  {pin.title}
+                  {pin.caption}
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  {pin.description}
+                  {pin.caption}
                 </p>
               </div>
 
               {/* Author Info */}
-              <div className="flex items-center space-x-3 p-4 bg-muted/30 rounded-lg">
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-                  <span className="text-sm font-medium text-white">
-                    {pin.author.charAt(0)}
-                  </span>
-                </div>
-                <div className="flex flex-row gap-10">
-                  <div>
-                    <p className="font-medium text-foreground">
-                      {pin.author}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {pin.category}
-                    </p>
+              <Link to="/profile">
+                <div className="flex items-center space-x-3 p-4 bg-muted/30 rounded-lg">
+                  <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+                    <span className="text-sm font-medium text-white">
+                      {pin.user.charAt(0)}
+                    </span>
                   </div>
-                  <Button
-                    onClick={() => setIsFollowed(!isFollowed)}
-                    className="bg-gradient-primary text-white hover:shadow-hover transition-smooth"
-                  >
-                    {isFollowed ? "unfollow" : "follow"}
-                  </Button>
+                  <div className="flex flex-row gap-10">
+                    <div>
+                      <p className="font-medium text-foreground">
+                        {pin.user}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {/* {pin.category} */}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => setIsFollowed(!isFollowed)}
+                      className="bg-gradient-primary text-white hover:shadow-hover transition-smooth"
+                    >
+                      {isFollowed ? "unfollow" : "follow"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Stats */}
               <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -102,7 +119,7 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
                   <div className="flex items-center space-x-1">
                     <Heart className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      {pin.likes} likes
+                      {pin.likes_count} likes
                     </span>
                   </div>
                 </div>
@@ -113,9 +130,19 @@ const PinModal = ({ pin, isOpen, onClose }: PinModalProps) => {
                 <h3 className="font-semibold text-foreground">
                   Comments
                 </h3>
-                <div className="text-sm text-muted-foreground">
-                  Be the first to comment on this pin!
-                </div>
+                {pin.comments.length > 0 ? (
+                  <div className="space-y-2">
+                    {pin.comments.map((comment) => (
+                      <div key={comment.id} className="text-sm text-muted-foreground">
+                        <strong>User {comment.user}:</strong> {comment.text}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">
+                    Be the first to comment on this pin!
+                  </div>
+                )}
               </div>
             </div>
           </div>
