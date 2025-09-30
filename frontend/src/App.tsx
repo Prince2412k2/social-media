@@ -10,6 +10,8 @@ import Register from "./pages/Register";
 import AuthCallback from "./pages/AuthCallback";
 import EditProfile from "./pages/EditProfile";
 import NotFound from "./pages/NotFound";
+import Inbox from "./pages/Inbox";
+import ChatRoom from "./pages/ChatRoom";
 import { UserProvider } from "./context/UserContext";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/inbox" element={<Inbox />} />
+            <Route path="/chat" element={<ChatRoom />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -2,12 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import PinCard from "./PinCard";
 import { Pin } from "@/data/pins";
 
+import { User } from "@/context/UserContext";
+
 interface MasonryGridProps {
   pins: Pin[];
   onPinClick?: (pin: Pin) => void;
+  onLikeChange: (pinId: number, newLikedStatus: boolean, newLikesCount: number) => void;
+  onDelete: (pinId: number) => void;
+  loggedInUser: User | null;
 }
 
-const MasonryGrid = React.memo(({ pins, onPinClick }: MasonryGridProps) => {
+const MasonryGrid = React.memo(({ pins, onPinClick, onLikeChange, onDelete, loggedInUser }: MasonryGridProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState(4);
 
@@ -56,6 +61,9 @@ const MasonryGrid = React.memo(({ pins, onPinClick }: MasonryGridProps) => {
                 <PinCard 
                   pin={pin} 
                   onClick={() => onPinClick?.(pin)}
+                  onLikeChange={onLikeChange}
+                  onDelete={onDelete}
+                  loggedInUser={loggedInUser}
                 />
               </div>
             ))}

@@ -1,13 +1,18 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import axios from 'axios';
-import { DEFAULT_URL } from '@/lib/defaults';
+import axiosInstance from '@/lib/axios';
 
 interface User {
   id: number;
-  email: string;
   username: string;
-  profile_picture?: string;
-  bio?: string;
+  email: string;
+  bio: string;
+  avatar: string;
+  created_at: string;
+  follower_count: number;
+  following_count: number;
+  post_count: number;
+  is_following: boolean;
 }
 
 interface UserContextType {
@@ -28,9 +33,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${DEFAULT_URL}/api/user/me/`, {
-          withCredentials: true,
-        });
+        const response = await axiosInstance.get(`/api/user/me/`);
         setUser(response.data);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 401) {
@@ -50,9 +53,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${DEFAULT_URL}/api/auth/logout/`, {}, {
-        withCredentials: true,
-      });
+      await axiosInstance.post(`/api/auth/logout/`);
       setUser(null);
     } catch (err) {
       setError("Failed to logout.");

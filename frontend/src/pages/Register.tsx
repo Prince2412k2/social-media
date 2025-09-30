@@ -1,5 +1,5 @@
 import { DEFAULT_URL, GITHUB_CLIENT_ID, GOOGLE_CLIENT_ID } from "@/lib/defaults"
-import axios from "axios"
+import axios from "@/lib/axios"
 import { useEffect, useState, type FormEvent, type ReactElement } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,7 +36,7 @@ export default function Register(): ReactElement {
   async function handleRegister(e: FormEvent) {
     e.preventDefault()
     try {
-      const response = await axios.post(`${DEFAULT_URL}/api/auth/register`, { email, password, username }, {
+      const response = await axios.post(`${DEFAULT_URL}/api/auth/signup`, { email, password, username }, {
         withCredentials: true
       })
       setUser(response.data.user); // Assuming the API returns user data on successful registration

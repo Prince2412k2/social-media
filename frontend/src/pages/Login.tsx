@@ -1,5 +1,5 @@
 import { DEFAULT_URL, GITHUB_CLIENT_ID, GOOGLE_CLIENT_ID } from "@/lib/defaults"
-import axios from "axios"
+import axios from "@/lib/axios"
 import { useEffect, useState, type FormEvent, type ReactElement } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
