@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 import requests
 from django.db import transaction
 from storages.backends.s3 import mimetypes
-from core.models import Credential, User, Provider_Type
+from core.models import Credential, Post, User, Provider_Type
 from core.services.password_service import PasswordService
 from django.core.files.base import ContentFile
 
@@ -127,8 +127,16 @@ class UserService:
                 },
             )
             if avatar:
-                UserService.save_avatar(user, avatar.name.avatar.read())
+                UserService.save_avatar(user, avatar.name, avatar.read())
         return user
+
+    @staticmethod
+    def get_posts(user: User):
+        return Post.objects.filter(user=user)
+
+    @staticmethod
+    def get_post_count(user: User):
+        return Post.objects.filter(user=user).count()
 
 
 class FollowService:
@@ -154,6 +162,14 @@ class FollowService:
     @staticmethod
     def get_following(self_user: User):
         return self_user.following.all()  # pyright: ignore
+
+    @staticmethod
+    def get_followers_count(self_user: User):
+        return self_user.followers.count()
+
+    @staticmethod
+    def get_following_count(self_user: User):
+        return self_user.following.count()  # pyright: ignore
 
     @staticmethod
     def remove_follower(self_user: User, user_to_unfollow_id: int):

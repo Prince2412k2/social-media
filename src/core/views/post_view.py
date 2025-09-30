@@ -16,6 +16,7 @@ from core.serializers.post_serializer import (
     PostSerializer,
 )
 from core.services.post_service import PostService
+from core.services.user_services import UserService
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class PostView(APIView):
 
 
 class PostFetchView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
     serializer_class = PostSerializer
     pagination_class = PageNumberPagination()
@@ -73,7 +74,35 @@ class PostFetchView(APIView):
         queryset = Post.objects.order_by(RandomOrder())
         paginator = self.pagination_class
         page = paginator.paginate_queryset(queryset, request, view=self)
-        serializer = self.serializer_class(page, many=True)
+        serializer = self.serializer_class(
+            page, many=True, context={"self_user": request.user}
+        )
+        return paginator.get_paginated_response(serializer.data)
+
+
+class PostViewForUser(APIView):
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    serializer_class = PostSerializer
+    pagination_class = PageNumberPagination()
+
+    def get(self, request):
+        return self.common_response(request.user, request)
+
+    def post(self, request):
+        user_id = request.data.get("user_id", None)
+        if not user_id:
+            raise ValueError("user_id is needed")
+        user = UserService.get_user_by_pk(user_id)
+        return self.common_response(user, request)
+
+    def common_response(self, user, request):
+        queryset = UserService.get_posts(user)
+        paginator = self.pagination_class
+        page = paginator.paginate_queryset(queryset, request, view=self)
+        serializer = self.serializer_class(
+            page, many=True, context={"self_user": request.user}
+        )
         return paginator.get_paginated_response(serializer.data)
 
 

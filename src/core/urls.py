@@ -10,6 +10,7 @@ from core.views.password_auth_view import (
 from core.views.post_view import (
     DeletePostView,
     PostFetchView,
+    PostViewForUser,
     UnLikePostView,
     LikePostView,
     PostView,
@@ -24,7 +25,7 @@ from core.views.follow_view import (
 )
 from core.views.user_view import (
     UpdateUserView,
-    get_users,
+    get_user_by_id,
     get_user,
 )
 
@@ -33,14 +34,14 @@ urlpatterns = []
 
 # temp-paths
 urlpatterns += [
-    path("users/", get_users, name="get-users"),
+    path("user/", get_user_by_id, name="get-by-pk"),
     path("user/me/", get_user, name="get-users"),
-    path("user/profile/", UpdateUserView.as_view(), name="get-users"),
+    path("user/profile/", UpdateUserView.as_view(), name="update-user"),
 ]
 
 # AUTH endpoints
 urlpatterns += [
-    path("auth/signup/", PasswordSignupView.as_view(), name="password-signup"),
+    path("auth/signup", PasswordSignupView.as_view(), name="password-signup"),
     path("auth/login", PasswordLoginView.as_view(), name="Password-Login"),
     path("auth/refresh", TokenRefreshView.as_view(), name="cookie-token-refresh"),
     path("auth/logout/", LogoutView.as_view(), name="logout"),
@@ -58,15 +59,16 @@ urlpatterns += [
 
 ##Post Crud endpoints
 urlpatterns += [
-    path("user/post", PostView.as_view(), name="post"),
-    path("user/posts", PostFetchView.as_view(), name="get-posts"),
-    path("user/post/del", DeletePostView.as_view(), name="delte-post"),
-    path("user/post/like", LikePostView.as_view(), name="like-post"),
-    path("user/post/dislike", UnLikePostView.as_view(), name="like-post"),
+    path("post", PostView.as_view(), name="post"),
+    path("posts", PostFetchView.as_view(), name="get-all-posts"),
+    path("user/posts/", PostViewForUser.as_view(), name="get-all-posts"),
+    path("post/del", DeletePostView.as_view(), name="delte-post"),
+    path("post/like", LikePostView.as_view(), name="like-post"),
+    path("post/dislike", UnLikePostView.as_view(), name="like-post"),
 ]
 ##Comment Crud endpoints
 urlpatterns += [
-    path("user/post/comments", GetCommenatsView.as_view(), name="add-comment"),
+    path("user/post/comments", GetCommenatsView.as_view(), name="get-comment"),
     path("user/post/comment", CommentView.as_view(), name="add-comment"),
     path("user/post/comment/del", DeleteCommentView.as_view(), name="delete-comment"),
     # path("user/post/del", DeletePostView.as_view(), name="delte-post"),

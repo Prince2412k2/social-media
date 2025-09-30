@@ -107,6 +107,6 @@ def GetFollowing(request):
     users = FollowService.get_following(self_user)
     serializered_users = DBUserSerializer(users, many=True)
     return Response(
-        {"Status": "Success", "followers": serializered_users.data},
+        serializered_users.data,
         status=status.HTTP_200_OK,
     )

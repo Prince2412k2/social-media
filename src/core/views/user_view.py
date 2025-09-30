@@ -2,7 +2,8 @@ import logging
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.serializers import ValidationError
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
@@ -17,10 +18,12 @@ from ..models import User
 logger = logging.getLogger(__name__)
 
 
-@api_view(["GET"])
-def get_users(request) -> Response:
-    user = User.objects.all()
-    serializer = DBUserSerializer(user, many=True)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def get_user_by_id(request) -> Response:
+    user_id = request.data.get("user_id")
+    user = UserService.get_user_by_pk(user_id)
+    serializer = DBUserSerializer(user)
     return Response(serializer.data)
 
 
@@ -50,9 +53,11 @@ class UpdateUserView(APIView):
             UserService.update(
                 user=user, avatar=avatar, email=email, username=username, bio=bio
             )
-        except Exception as e:
-            return Response({"msg": "error"}, status=HTTP_400_BAD_REQUEST)
-        return Response({"msg": "success"}, status=HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(
+                {"status": "Failed", "msg": "User with given id doesnt exist"}
+            )
+        return Response({"status": "success", "msg": "success"}, status=HTTP_200_OK)
 
     def get(self, request):
         user = request.user
@@ -60,7 +65,14 @@ class UpdateUserView(APIView):
         try:
             serializer = RequestUpdateUserSerializer(user)
             data = serializer.data
-        except Exception as e:
-            return Response({"msg": "error"}, status=HTTP_400_BAD_REQUEST)
-
+        except User.DoesNotExist:
+            return Response(
+                {"status": "Failed", "msg": "User with given id doesnt exist"},
+                status=HTTP_404_NOT_FOUND,
+            )
+        except ValidationError:
+            return Response(
+                {"status": "Failed", "msg": "Invalid request format"},
+                status=HTTP_400_BAD_REQUEST,
+            )
         return Response(data, status=HTTP_200_OK)

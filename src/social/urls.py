@@ -20,7 +20,7 @@ from django.urls import path, include
 from chatapp.views import ws_view
 
 urlpatterns = [
-    path("", include("chatapp.urls")),
+    path("chat/", include("chatapp.urls")),
     path("admin/", admin.site.urls),
     path("api/", include("core.urls")),
 ]

@@ -7,21 +7,40 @@ from core.models import User
 from rest_framework import serializers
 from PIL import Image
 
+from core.services.post_service import PostService
+from core.services.user_services import FollowService, UserService
+
 logger = logging.getLogger(__name__)
 
 
 class DBUserSerializer(serializers.ModelSerializer):
+    follower_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+    post_count = serializers.SerializerMethodField()
+
     class Meta:  # pyright: ignore
         model = User
         fields = [
             "id",
             "username",
+            "follower_count",
+            "following_count",
+            "post_count",
             "password",
             "email",
             "bio",
             "avatar",
             "created_at",
         ]
+
+    def get_follower_count(self, obj):
+        return FollowService.get_followers_count(obj)
+
+    def get_following_count(self, obj):
+        return FollowService.get_following_count(obj)
+
+    def get_post_count(self, obj):
+        return UserService.get_post_count(obj)
 
 
 class RequestUserSerializer(serializers.Serializer):

@@ -176,8 +176,8 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "user": "1000/day",  # 100 requests per day per authenticated user
-        "anon": "100/day",  # 10 requests per day per anonymous user
+        "user": "10000/day",  # 100 requests per day per authenticated user
+        "anon": "10000/day",  # 10 requests per day per anonymous user
     },
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 30,

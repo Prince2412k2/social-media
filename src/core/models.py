@@ -74,6 +74,12 @@ class User(BaseModel, AbstractUser):  # pyright: ignore
         self.following.clear()  # pyright: ignore
         self.save(using=using)
 
+    def is_following(self, target_user):
+        return self.following.filter(id=target_user.id).exists()  # pyright: ignore
+
+    def __str__(self):
+        return self.username
+
 
 class Credential(BaseModel):
     """

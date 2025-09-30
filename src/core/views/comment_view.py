@@ -34,8 +34,7 @@ class CommentView(APIView):
     def post(self, request):
         user = request.user
         text = request.data.get("text", "")
-        post = request.data.get("post")
-        logger.info(request)
+        post = request.data.get("post_id")
 
         try:
             comment = CommentService.create_or_update(
@@ -46,7 +45,6 @@ class CommentView(APIView):
             return Response(
                 {"msg": "Something went wrong"}, status=HTTP_400_BAD_REQUEST
             )
-        logger.info(comment)
         try:
             serialised_comment = CommentSerializer(
                 comment, context={"request": request}

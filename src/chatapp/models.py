@@ -25,3 +25,6 @@ class Message(models.Model):
         Returns the other participant in the conversation.
         """
         return self.conversation.participants.exclude(id=self.sender.id).first()
+
+    def __str__(self) -> str:
+        return self.content
