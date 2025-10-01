@@ -64,7 +64,7 @@ class PasswordLoginView(LoginView):
                     "status": "Failed",
                     "message": "User with this email doesn't exist",
                 },
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_404_NOT_FOUND,
             )
         except AuthenticationFailed:
             return Response(
@@ -72,7 +72,7 @@ class PasswordLoginView(LoginView):
                     "status": "Failed",
                     "message": "Invalid password",
                 },
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_409_CONFLICT,
             )
 
         refresh_token = TokenService.get_refresh_token_for_user(self.user)
