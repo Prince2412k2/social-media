@@ -32,7 +32,7 @@ dependencies = [
 [tool.poe.tasks]
 make = "./src/manage.py makemigrations"
 migrate = "./src/manage.py migrate"
-run = "./src/manage.py runserver"
+run = "uvicorn social.asgi:application --reload --port 8001 --app-dir ./src/ "
 srun = "doppler run -- uvicorn social.asgi:application --reload --port 8001 --app-dir ./src/ "
 shell = "./src/manage.py shell"
 flush="./src/manage.py flush"
