@@ -21,3 +21,4 @@ src/db.sqlite3
 **/*.log
 
 data
+frontend
