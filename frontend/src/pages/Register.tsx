@@ -1,5 +1,4 @@
 import { DEFAULT_URL, GITHUB_CLIENT_ID, GOOGLE_CLIENT_ID } from "@/lib/defaults"
-import axios from "@/lib/axios"
 import { useEffect, useState, type FormEvent, type ReactElement } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +8,7 @@ import { Chrome, Github } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useUser } from "@/context/UserContext";
+import axios from "axios"
 
 export default function Register(): ReactElement {
   const [email, setEmail] = useState("")
